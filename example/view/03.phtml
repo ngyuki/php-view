@@ -1,0 +1,40 @@
+<?php
+/* @var $this App\PhpRenderer\ViewTrait */
+?>
+<!doctype html>
+<html>
+<head>
+<?= $this->block('head') ?>
+    <meta charset="utf-8">
+    <title><?= $this->block('title')?><?= $this->endblock() ?></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        #nav, #content, #footer {
+            border: 1px solid #888;
+            margin: 10px;
+            padding: 5px;
+        }
+    </style>
+<?= $this->endblock() ?>
+</head>
+<body>
+<div id="nav">
+<?= $this->block('nav')?>
+    <p>ここは親の nav です</p>
+<?= $this->endblock() ?>
+</div>
+<div id="content">
+<?= $this->block('content')?>
+    <p>ここは親の content です</p>
+<?= $this->endblock() ?>
+</div>
+<div id="footer">
+<?= $this->block('footer')?>
+    <p>ここは親の footer です</p>
+<?= $this->endblock() ?>
+</div>
+</body>
+</html>

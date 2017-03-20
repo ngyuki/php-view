@@ -1,0 +1,14 @@
+<?php
+/* @var $this App\PhpRenderer\ViewTrait */
+$this->extend('03');
+?>
+
+<?= $this->block('nav')?>
+    <p>ここは子の nav です</p>
+<?= $this->endblock() ?>
+
+<?= $this->block('footer') ?>
+    <p>ここ↓に親を差し込みます by 子</p>
+<?= $this->parent() ?>
+    <p>ここ↑に親を差し込みます by 子</p>
+<?= $this->endblock() ?>

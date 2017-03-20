@@ -1,0 +1,16 @@
+<?php
+/* @var $this App\PhpRenderer\ViewTrait */
+$this->extend('02');
+?>
+
+<?= $this->block('title') ?>これは孫の title です<?= $this->endblock() ?>
+
+<?= $this->block('content') ?>
+    ここは孫の content です
+<?= $this->endblock() ?>
+
+<?= $this->block('footer') ?>
+    <p>ここ↓に親を差し込みます by 孫</p>
+<?= $this->parent() ?>
+    ここ↑に親を差し込みます by 孫
+<?= $this->endblock() ?>
