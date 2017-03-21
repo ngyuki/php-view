@@ -1,21 +1,11 @@
 <?php
 use App\PhpRenderer\Renderer;
-use App\PhpRenderer\StreamFilter;
-use App\PhpRenderer\TemplateResolver;
-use App\PhpRenderer\ViewInterface;
-use App\PhpRenderer\ViewTrait;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$view = new Renderer(
-    new TemplateResolver(__DIR__ . '/view/', '.phtml'),
-    new StreamFilter(),
-    function () {
-        return new class implements ViewInterface { use ViewTrait; };
-    }
-);
+$renderer = Renderer::createSimple(__DIR__ . '/view/');
 
-$content = $view->render('01', [
+$content = $renderer->render('01', [
     'val' => 123,
 ]);
 echo $content;
