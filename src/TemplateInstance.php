@@ -6,7 +6,7 @@ class TemplateInstance
     /**
      * @var string
      */
-    private $file;
+    private $path;
 
     /**
      * @var TemplateInstance
@@ -21,40 +21,74 @@ class TemplateInstance
     /**
      * @var Block[]
      */
-    private $blockByName = [];
+    private $blocks = [];
 
     /**
-     * @var Block[]
+     * @param string $path
      */
-    private $blockStack = [];
-
-    public function __construct($file)
+    public function __construct($path)
     {
-        $this->file = $file;
+        $this->path = $path;
+        $this->rootBlock = new Block(null);
     }
 
-    public function process(TemplateResolver $resolver, callable $viewFactory, array $params = [])
+    /**
+     * @return string
+     */
+    public function getPath()
     {
-        $this->rootBlock =  new Block($this);
-        $this->blockStack[] = $this->rootBlock;
+        return $this->path;
+    }
 
-        ob_start(function ($str) {
-            end($this->blockStack)->addText($str);
-        });
+    /**
+     * @return Block
+     */
+    public function getRootBlock()
+    {
+        return $this->rootBlock;
+    }
 
-        $path = $resolver->resolve($this->file);
-
-        $view = ($viewFactory)();
-        $view($this, $path, $params);
-
-        ob_end_flush();
-
-        array_pop($this->blockStack);
-        assert(count($this->blockStack) === 0);
-
-        if ($this->parent) {
-            $this->parent->process($resolver, $viewFactory, $params);
+    /**
+     * @param string $name
+     * @return Block|null
+     */
+    public function getBlock($name)
+    {
+        if (isset($this->blocks[$name])) {
+            return $this->blocks[$name];
         }
+        if ($this->parent) {
+            return $this->parent->getBlock($name);
+        }
+        return null;
+    }
+
+    /**
+     * @param Block $block
+     */
+    public function addBlock(Block $block)
+    {
+        assert(array_key_exists($block->getName(), $this->blocks) == false);
+
+        $this->blocks[$block->getName()] = $block;
+    }
+
+    /**
+     * @return TemplateInstance
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param TemplateInstance $parent
+     */
+    public function setParent(TemplateInstance $parent)
+    {
+        assert($this->parent === null);
+
+        $this->parent = $parent;
     }
 
     /**
@@ -69,62 +103,5 @@ class TemplateInstance
             $template = $template->parent;
         }
         return $template->rootBlock->toString($this);
-    }
-
-    /**
-     * 名前でブロックを取得する
-     *
-     * @param string $name
-     * @return Block|null
-     */
-    public function getBlock($name)
-    {
-        if (isset($this->blockByName[$name])) {
-            return $this->blockByName[$name];
-        }
-        if ($this->parent) {
-            return $this->parent->getBlock($name);
-        }
-        return null;
-    }
-
-    public function extend($file)
-    {
-        assert($this->parent === null);
-
-        $this->parent = new TemplateInstance($file);
-    }
-
-    public function block($name)
-    {
-        ob_flush();
-
-        $block = new Block($name);
-
-        $current = end($this->blockStack);
-        $current->addBlock($block);
-
-        $this->blockStack[] = $block;
-        $this->blockByName[$name] = $block;
-    }
-
-    public function endblock()
-    {
-        assert(count($this->blockStack) > 1);
-
-        ob_flush();
-
-        array_pop($this->blockStack);
-    }
-
-    public function parent()
-    {
-        assert($this->parent !== null);
-        assert(count($this->blockStack) > 1);
-
-        ob_flush();
-
-        $current = end($this->blockStack);
-        $current->addParentBlock($this->parent);
     }
 }

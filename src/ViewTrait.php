@@ -9,13 +9,13 @@ namespace App\PhpRenderer;
 trait ViewTrait
 {
     /**
-     * @var TemplateInstance
+     * @var Processor
      */
-    private $template;
+    private $processor;
 
-    public function __invoke(TemplateInstance $template, $path, array $params)
+    public function __invoke(Processor $processor, $path, array $params)
     {
-        $this->template = $template;
+        $this->processor = $processor;
 
         (function () {
             extract(func_get_arg(1));
@@ -26,25 +26,25 @@ trait ViewTrait
 
     public function extend($file)
     {
-        $this->template->extend($file);
+        $this->processor->extend($file);
         return null;
     }
 
     public function block($name)
     {
-        $this->template->block($name);
+        $this->processor->block($name);
         return null;
     }
 
     public function endblock()
     {
-        $this->template->endblock();
+        $this->processor->endblock();
         return null;
     }
 
     public function parent()
     {
-        $this->template->parent();
+        $this->processor->parent();
         return null;
     }
 }

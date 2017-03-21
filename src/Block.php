@@ -6,13 +6,30 @@ namespace App\PhpRenderer;
  */
 class Block
 {
+    /**
+     * @var string|null
+     */
     private $name;
 
+    /**
+     * @var array
+     */
     private $children = [];
 
+    /**
+     * @param string|null $name
+     */
     public function __construct($name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**

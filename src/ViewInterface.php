@@ -9,10 +9,10 @@ interface ViewInterface
     /**
      * 指定されたテンプレートインスタンス・ファイル・パラメータでテンプレートをインクルード
      *
-     * @param TemplateInstance $template
+     * @param Processor $processor
      * @param string $path
      * @param array $params
      * @return string
      */
-    public function __invoke(TemplateInstance $template, $path, array $params);
+    public function __invoke(Processor $processor, $path, array $params);
 }

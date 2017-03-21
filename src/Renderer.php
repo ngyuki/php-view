@@ -24,8 +24,8 @@ class Renderer
         $level = ob_get_level();
 
         try {
-            $template = new TemplateInstance($file);
-            $template->process($this->resolver, $this->viewFactory, $params);
+            $processor = new Processor($this->resolver, $this->viewFactory);
+            $template = $processor->process($file, $params);
             return $template->combine();
         } finally {
             while (ob_get_level() > $level) {
