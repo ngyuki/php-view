@@ -9,13 +9,19 @@ class Renderer
     private $resolver;
 
     /**
+     * @var StreamFilter
+     */
+    private $filter;
+
+    /**
      * callable
      */
     private $viewFactory;
 
-    public function __construct(TemplateResolver $resolver, callable $viewFactory)
+    public function __construct(TemplateResolver $resolver, StreamFilter $filter, callable $viewFactory)
     {
         $this->resolver = $resolver;
+        $this->filter = $filter;
         $this->viewFactory = $viewFactory;
     }
 
@@ -24,7 +30,7 @@ class Renderer
         $level = ob_get_level();
 
         try {
-            $processor = new Processor($this->resolver, $this->viewFactory);
+            $processor = new Processor($this->resolver, $this->filter, $this->viewFactory);
             $template = $processor->process($file, $params);
             return $template->combine();
         } finally {

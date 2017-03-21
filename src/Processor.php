@@ -9,6 +9,11 @@ class Processor
     private $resolver;
 
     /**
+     * StreamFilter
+     */
+    private $filter;
+
+    /**
      * @var callable
      */
     private $viewFactory;
@@ -23,9 +28,10 @@ class Processor
      */
     private $blockStack = [];
 
-    public function __construct(TemplateResolver $resolver, callable $viewFactory)
+    public function __construct(TemplateResolver $resolver, StreamFilter $filter, callable $viewFactory)
     {
         $this->resolver = $resolver;
+        $this->filter = $filter;
         $this->viewFactory = $viewFactory;
     }
 
@@ -42,7 +48,7 @@ class Processor
             });
 
             $view = ($this->viewFactory)();
-            $view($this, $this->template->getPath(), $params);
+            $view($this, $this->filter->generate($this->template->getPath()), $params);
 
             ob_end_flush();
 

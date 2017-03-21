@@ -7,6 +7,8 @@ $this->extend('02');
 
 <?= $this->block('content') ?>
     ここは孫の content です
+    <?= '<script>alert("XSS!")</script>' ?>
+
 <?= $this->endblock() ?>
 
 <?= $this->block('footer') ?>
